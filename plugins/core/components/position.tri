@@ -1,0 +1,10 @@
+proc init!({| "x" => x, "y" => y |}) {
+  return 'position(x : y)
+}
+
+export init
+
+func x 'position(x:_) = x
+func y 'position(_:y) = y
+
+export x, y

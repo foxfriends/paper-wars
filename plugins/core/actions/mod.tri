@@ -1,0 +1,8 @@
+module ecs at "trilogy:ecs"
+
+rule actions('move(dx:dy)) <-
+  ecs::query(entity, ['groundMovement(speed), 'position(x:y)])
+  and not ecs::query(entity, ['moved])
+
+proc apply!(entity, state, 'move(x:y)) {
+}

@@ -1,0 +1,5 @@
+module actions at "./actions/mod.tri"
+module components at "./components/mod.tri"
+module resources at "./resources/mod.tri"
+module tiles at "./tiles/mod.tri"
+module layers at "./layers/mod.tri"
