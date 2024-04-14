@@ -1,2 +1,19 @@
 module position at "./position.tri"
-module groundMovement at "./groundMovement.tri"
+export position
+
+module movementSpeed at "./movementSpeed.tri"
+export movementSpeed
+
+module moved at "./moved.tri"
+export moved
+
+const movementTypeWalk = ecs::marker 'movementTypeWalk
+export movementTypeWalk
+
+const all = [
+  position,
+  movementSpeed,
+  moved,
+  movementTypeWalk,
+]
+export all

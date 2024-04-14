@@ -1,10 +1,26 @@
-proc init!({| "x" => x, "y" => y |}) {
-  return 'position(x : y)
+module ecs at "trilogy:ecs"
+module tuple at "trilogy:tuple" use fst, snd
+
+proc load!({| "x" => x, "y" => y |}) {
+  return x : y
 }
 
-export init
+proc save!(x : y) {
+  return {| "x" => x, "y" => y |}
+}
 
-func x 'position(x:_) = x
-func y 'position(_:y) = y
+rule get(entity, position) <- position = ecs::getComponent!(entity, 'position)
+rule has(entity) <- is ecs::hasComponent!(entity, 'position)
+
+proc set(entity, (x and typeof 'number) : (y and typeof 'number)) {
+  ecs::setComponent!(entity, 'position(x:y))
+}
+
+const name = 'position
+
+export load, save, get, set, name
+
+const x = fst
+const y = snd
 
 export x, y

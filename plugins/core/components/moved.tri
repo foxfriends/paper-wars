@@ -1,0 +1,20 @@
+module ecs at "trilogy:ecs"
+
+proc load!({| "distance" => distance |}) {
+  return distance
+}
+
+proc save!(distance) {
+  return {| "distance" => distance |}
+}
+
+rule get(entity, moved) <- moved = ecs::getComponent!(entity, 'moved)
+rule has(entity) <- is ecs::hasComponent!(entity, 'moved)
+
+proc set(entity, distance and typeof 'number) {
+  ecs::setComponent!(entity, 'moved(distance))
+}
+
+const name = 'moved
+
+export load, save, get, set, name

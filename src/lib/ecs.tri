@@ -1,0 +1,96 @@
+module _struct at "trilogy:struct" use name, construct, destruct
+module _record at "trilogy:record" use contains, delete
+module _set at "trilogy:set" use remove, insert
+
+export createEntity
+proc createEntity!() {
+  return yield 'createEntity
+}
+
+export destroyEntity
+proc destroyEntity!(e) {
+  return yield 'destroyEntity(e)
+}
+
+export setComponent
+proc setComponent!(e, component) {
+  return yield 'setComponent(e : component)
+}
+
+export getComponent
+proc getComponent!(e, componentType) {
+  return match yield 'getComponent(e : componentType)
+    case unit then yield 'MIA
+    else v then v
+}
+
+export hasComponent
+proc hasComponent!(e, componentType) {
+  return unit != yield 'getComponent(e : componentType)
+}
+
+export deleteComponent
+proc deleteComponent(e, componentType) {
+  return yield match componentType
+    case typeof 'struct then name componentType
+    else componentType
+}
+
+export entity
+rule entity(entity) <- entity in yield 'entities
+
+export run
+proc run!(world, body) {
+  with {
+    return body!()
+  }
+  when 'entities resume world.'entities
+  when 'getComponent(entity : componentType)
+    resume with world.'components.component.entity else resume unit
+  when 'setComponent(entity : (component and typeof 'struct))
+    invert {
+      ct : v = destruct component
+      world.'components.ct.entity = v
+      cancel resume
+    }
+  when 'setComponent(entity : (component and typeof 'atom))
+    invert {
+      world.'components.component.entity = component
+      cancel resume
+    }
+  when 'createEntity
+    invert {
+      let id = uuid::v4!()
+      world.'entities insert= id
+      cancel resume id
+    }
+  when 'destroyEntity(entity)
+    invert {
+      world.'entities remove= id
+      for _:cs in world.'components {
+        delete!(cs, entity)
+      }
+      cancel resume
+    }
+  else yield
+}
+
+export marker
+module marker name {
+  proc load!(_) {
+    return name
+  }
+
+  proc save!(_) {
+    return {| |}
+  }
+
+  rule get(entity, ^name) <- ecs::hasComponent(entity, ^name)
+  rule has(entity) <- ecs::hasComponent(entity, ^name)
+
+  proc set(entity, ^name) {
+    ecs::setComponent!(entity, name)
+  }
+
+  export load, save, get, has, set
+}

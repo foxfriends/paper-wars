@@ -1,0 +1,21 @@
+module array at "trilogy:array"
+module ecs at "trilogy:ecs"
+module pw at "trilogy:pw"
+module _components at "../components" use position, movementSpeed, movementTypeWalk, moved
+
+rule actions(entity, 'walkpath(speed)) <-
+  position::has(entity)
+  and movementSpeed::get(entity, speed)
+  and movementTypeWalk::has(entity)
+  and not moved::has(entity)
+
+proc apply!(entity, 'walkpath(path and typeof 'array)) {
+  let position::get(entity, mut pos)
+  for position in path {
+    position::set!(entity, position)
+    pos = position
+  }
+  moved::set!(entity, array::length path)
+}
+
+export actions, apply

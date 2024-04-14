@@ -1,0 +1,19 @@
+module ecs at "trilogy:ecs"
+
+proc load!({| "speed" => speed |}) {
+  return speed
+}
+
+proc save!(speed) {
+  return {| "speed" => speed |}
+}
+
+rule get(entity, speed) <- speed = ecs::getComponent!(entity, 'movementSpeed)
+rule has(entity) <- is ecs::hasComponent!(entity, 'movementSpeed)
+proc set(entity, speed and typeof 'number) {
+  ecs::setComponent!(entity, 'movementSpeed(speed))
+}
+
+const name = 'movementSpeed
+
+export load, save, get, set, name

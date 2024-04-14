@@ -1,5 +1,0 @@
-proc init!({| "speed" => speed |}) {
-  return 'groundMovement(speed)
-}
-
-export init
